@@ -1,8 +1,10 @@
 package entity.combatant;
+
 import entity.effect.StatusEffect;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 /**
  * Abstract base class for all combat participants.
  * Demonstrates SRP: only manages combatant state and effects.
@@ -20,6 +22,7 @@ public abstract class Combatant {
     private int specialSkillCooldown;
     private boolean alive;
     private List<StatusEffect> activeEffects;
+
     public Combatant(String name, int hp, int attack, int defense, int speed) {
         this.name = name;
         this.hp = hp;
@@ -33,6 +36,7 @@ public abstract class Combatant {
         this.alive = true;
         this.activeEffects = new ArrayList<>();
     }
+
     // --- Getters ---
     public String getName() { return name; }
     public int getHp() { return hp; }
@@ -47,10 +51,12 @@ public abstract class Combatant {
     public int getSpecialSkillCooldown() { return specialSkillCooldown; }
     public boolean isAlive() { return alive; }
     public List<StatusEffect> getActiveEffects() { return activeEffects; }
+
     // --- Setters ---
     public void setBonusAttack(int bonusAttack) { this.bonusAttack = bonusAttack; }
     public void setBonusDefense(int bonusDefense) { this.bonusDefense = bonusDefense; }
     public void setSpecialSkillCooldown(int cooldown) { this.specialSkillCooldown = cooldown; }
+
     /**
      * Apply damage to this combatant.
      * HP cannot go below 0.
@@ -62,12 +68,14 @@ public abstract class Combatant {
             this.alive = false;
         }
     }
+
     /**
      * Heal this combatant. HP cannot exceed maxHp.
      */
     public void heal(int amount) {
         this.hp = Math.min(this.maxHp, this.hp + amount);
     }
+
     /**
      * Add a status effect to this combatant.
      */
@@ -75,6 +83,7 @@ public abstract class Combatant {
         activeEffects.add(effect);
         effect.onApply(this);
     }
+
     /**
      * Apply all active status effects at the start of a turn.
      */
@@ -83,6 +92,7 @@ public abstract class Combatant {
             effect.onTurnStart(this);
         }
     }
+
     /**
      * Tick down effect durations and remove expired effects.
      */
@@ -97,6 +107,7 @@ public abstract class Combatant {
             }
         }
     }
+
     /**
      * Reduce special skill cooldown by 1 (called when this combatant takes a turn).
      */
@@ -105,6 +116,7 @@ public abstract class Combatant {
             specialSkillCooldown--;
         }
     }
+
     /**
      * Check if this combatant is stunned.
      */
@@ -116,6 +128,7 @@ public abstract class Combatant {
         }
         return false;
     }
+
     /**
      * Check if this combatant has smoke bomb invulnerability.
      */
@@ -127,6 +140,7 @@ public abstract class Combatant {
         }
         return false;
     }
+
     @Override
     public String toString() {
         return name + " (HP: " + hp + "/" + maxHp + " | ATK: " + getAttack() +
