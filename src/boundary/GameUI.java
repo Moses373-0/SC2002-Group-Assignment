@@ -2,7 +2,12 @@ package boundary;
 
 import entity.combatant.Combatant;
 import entity.combatant.player.Player;
+import entity.combatant.player.Warrior;
+import entity.combatant.player.Wizard;
 import entity.combatant.enemy.Enemy;
+import entity.effect.StatusEffect;
+import entity.item.Item;
+import entity.level.Difficulty;
 import java.util.List;
 import java.util.Scanner;
 
@@ -100,13 +105,62 @@ public class GameUI {
         msgOut("");
     }
 
-        System.out.println();
+    public void displayCombatantStatus(Player player, List<Enemy> enemies) {
+        msgOut("── Status ──────────────────────────────────────────");
+        msgOut("  " + player.getName() + ": HP " + player.getHp() + "/" + player.getMaxHp() +
+                           " | ATK:" + player.getAttack() + " | DEF:" + player.getDefense());
+
+        // Active effects
+        if (!player.getActiveEffects().isEmpty()) {
+            System.out.print("    Effects: ");
+            for (StatusEffect e : player.getActiveEffects()) {
+                System.out.print("[" + e.getName() + " " + e.getDuration() + "t] ");
+            }
+            msgOut("");
+        }
+
+        // Items
+        if (player.hasItems()) {
+            System.out.print("    Items: ");
+            for (Item item : player.getInventory()) {
+                System.out.print("[" + item.getName() + "] ");
+            }
+            msgOut("");
+        }
+
+        // Cooldown
+        if (player.getSpecialSkillCooldown() > 0) {
+            msgOut("    Special Skill Cooldown: " + player.getSpecialSkillCooldown() + " rounds");
+        } else {
+            msgOut("    Special Skill: READY");
+        }
+
+        msgOut("");
+        for (Enemy enemy : enemies) {
+            if (enemy.isAlive()) {
+                System.out.print("  " + enemy.getName() + ": HP " + enemy.getHp() + "/" + enemy.getMaxHp() +
+                               " | ATK:" + enemy.getAttack() + " | DEF:" + enemy.getDefense());
+                if (!enemy.getActiveEffects().isEmpty()) {
+                    System.out.print(" | Effects: ");
+                    for (StatusEffect e : enemy.getActiveEffects()) {
+                        System.out.print("[" + e.getName() + " " + e.getDuration() + "t] ");
+                    }
+                }
+                msgOut("");
+            } else {
+                msgOut("  " + enemy.getName() + ": ✗ ELIMINATED");
+            }
+        }
+        msgOut("────────────────────────────────────────────────────");
+    }
+
     public void displayTurnStart(Combatant combatant) {
         msgOut("");
         msgOut(">> " + combatant.getName() + "'s Turn");
     }
 
     public void displayStunned(Combatant combatant) {
+        msgOut("   " + combatant.getName() + " is STUNNED! Turn skipped.");
     }
 
     public void displayEliminated(Combatant combatant) {
@@ -152,6 +206,10 @@ public class GameUI {
         msgOut("");
         msgOut("⚠ BACKUP SPAWN TRIGGERED! ⚠");
         msgOut("  New enemies enter the battlefield:");
+        for (Enemy e : backupEnemies) {
+            msgOut("  • " + e.getName() + " (HP: " + e.getHp() + " | ATK: " +
+                             e.getAttack() + " | DEF: " + e.getDefense() + " | SPD: " + e.getSpeed() + ")");
+        }
         msgOut("");
     }
 
