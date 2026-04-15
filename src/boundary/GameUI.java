@@ -11,6 +11,11 @@ import entity.level.Difficulty;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Boundary class for all CLI user interaction.
+ * Demonstrates SRP: only handles input/output.
+ * Separated from battle logic (DIP).
+ */
 public class GameUI {
     private Scanner scanner;
 
@@ -18,6 +23,7 @@ public class GameUI {
         this.scanner = new Scanner(System.in);
     }
 
+    // ========================== LOADING SCREEN ==========================
 
     public void displayTitle() {
         msgOut("╔══════════════════════════════════════════════════╗");
@@ -79,6 +85,8 @@ public class GameUI {
         return getValidInput("Choose difficulty (1-3): ", 1, 3);
     }
 
+    // ======================== TURN ORDER STRATEGY ========================
+
     public int selectTurnOrderStrategy() {
         msgOut("");
         msgOut("═══════════ SELECT TURN ORDER STRATEGY ════════════");
@@ -88,6 +96,8 @@ public class GameUI {
         msgOut("");
         return getValidInput("Choose turn order strategy (1-2): ", 1, 2);
     }
+
+    // ======================== BATTLE DISPLAY ========================
 
     public void displayRoundHeader(int roundNumber) {
         msgOut("");
@@ -171,6 +181,8 @@ public class GameUI {
         msgOut("   " + result.replace("\n", "\n    "));
     }
 
+    // ======================== PLAYER ACTION SELECTION ========================
+
     public int getPlayerAction(Player player) {
         msgOut("");
         msgOut("    Choose your action:");
@@ -191,6 +203,7 @@ public class GameUI {
 
         int choice = getValidInput("    > ", 1, maxChoice);
 
+        // Validate special constraints
         if (choice == 3 && !player.hasItems()) {
             msgOut("    No items available! Choose again.");
             return getPlayerAction(player);
@@ -220,6 +233,8 @@ public class GameUI {
         return getValidInput("   > ", 1, items.size()) - 1;
     }
 
+    // ======================== BACKUP SPAWN ========================
+
     public void displayBackupSpawn(List<Enemy> backupEnemies) {
         msgOut("");
         msgOut("⚠ BACKUP SPAWN TRIGGERED! ⚠");
@@ -230,6 +245,8 @@ public class GameUI {
         }
         msgOut("");
     }
+
+    // ======================== GAME END ========================
 
     public void displayVictory(int remainingHp, int maxHp, int totalRounds, Player player) {
         msgOut("");
@@ -273,6 +290,8 @@ public class GameUI {
         return getValidInput("  > ", 1, 3);
     }
 
+    // ======================== ROUND END ========================
+
     public void displayRoundEnd(int roundNumber, Player player, List<Enemy> enemies) {
         msgOut("");
         msgOut("── End of Round " + roundNumber + " ──");
@@ -306,6 +325,8 @@ public class GameUI {
         msgOut("");
     }
 
+    // ======================== UTILITY ========================
+
     public void msgOut(String message) {
         System.out.println(message);
     }
@@ -319,9 +340,9 @@ public class GameUI {
                 if (choice >= min && choice <= max) {
                     return choice;
                 }
-                System.out.println("   Invalid choice. Please enter a number between " + min + " and " + max + ".");
+                msgOut("   Invalid choice. Please enter a number between " + min + " and " + max + ".");
             } catch (NumberFormatException e) {
-                System.out.println("   Invalid input. Please enter a number.");
+                msgOut("   Invalid input. Please enter a number.");
             }
         }
     }
