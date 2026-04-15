@@ -1,5 +1,6 @@
 package boundary;
 
+import entity.combatant.Combatant;
 import entity.combatant.player.Player;
 import java.util.Scanner;
 
@@ -32,6 +33,11 @@ public class GameUI {
         msgOut("");
     }
 
+    public int selectPlayer() {
+        displayPlayerOptions();
+        return getValidInput("Choose your player (1-2): ", 1, 2);
+    }
+
     public void displayItemOptions() {
         msgOut("");
         msgOut("═══════════════ SELECT YOUR ITEMS ════════════════");
@@ -43,6 +49,10 @@ public class GameUI {
         msgOut("");
     }
 
+    public int selectItem(int itemNumber) {
+        return getValidInput("Choose item " + itemNumber + " (1-3): ", 1, 3);
+    }
+
     public int selectTurnOrderStrategy() {
         msgOut("");
         msgOut("═══════════ SELECT TURN ORDER STRATEGY ════════════");
@@ -50,11 +60,29 @@ public class GameUI {
         msgOut("    [1] Speed-Based  - Highest speed goes first");
         msgOut("    [2] Player First - Player always acts before enemies");
         msgOut("");
+        return getValidInput("Choose turn order strategy (1-2): ", 1, 2);
     }
 
     public void displayRoundHeader(int roundNumber) {
         msgOut("");
         msgOut("══════════════════ ROUND " + roundNumber + " ══════════════════");
+    }
+
+    public void displayTurnStart(Combatant combatant) {
+        System.out.println();
+        System.out.println(">> " + combatant.getName() + "'s Turn");
+    }
+
+    public void displayStunned(Combatant combatant) {
+        System.out.println("   " + combatant.getName() + " is STUNNED! Turn skipped.");
+    }
+
+    public void displayEliminated(Combatant combatant) {
+        System.out.println("   " + combatant.getName() + " is ELIMINATED. Turn skipped.");
+    }
+
+    public void displayActionResult(String result) {
+        System.out.println("   " + result.replace("\n", "\n   "));
     }
 
     public int getPlayerAction(Player player) {
@@ -75,6 +103,8 @@ public class GameUI {
             msgOut("    [4] " + player.getSpecialSkillName() + " (Cooldown: " + player.getSpecialSkillCooldown() + " turns)");
         }
 
+        int choice = getValidInput("    > ", 1, maxChoice);
+
         if (choice == 3 && !player.hasItems()) {
             msgOut("    No items available! Choose again.");
             return getPlayerAction(player);
@@ -91,4 +121,19 @@ public class GameUI {
         System.out.println(message);
     }
 
+    private int getValidInput(String prompt, int min, int max) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                String line = scanner.nextLine().trim();
+                int choice = Integer.parseInt(line);
+                if (choice >= min && choice <= max) {
+                    return choice;
+                }
+                System.out.println("   Invalid choice. Please enter a number between " + min + " and " + max + ".");
+            } catch (NumberFormatException e) {
+                System.out.println("   Invalid input. Please enter a number.");
+            }
+        }
+    }
 }
