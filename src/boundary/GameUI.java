@@ -86,6 +86,8 @@ public class GameUI {
         return choice;
     }
 
+
+    public void msgOut(String message) {
         System.out.println(message);
     }
 
