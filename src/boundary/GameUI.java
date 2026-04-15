@@ -213,6 +213,48 @@ public class GameUI {
         msgOut("");
     }
 
+    public void displayVictory(int remainingHp, int maxHp, int totalRounds, Player player) {
+        msgOut("");
+        msgOut("╔══════════════════════════════════════════════════╗");
+        msgOut("║                     VICTORY!                     ║");
+        msgOut("╠══════════════════════════════════════════════════╣");
+        msgOut("║  Congratulations, you have defeated all your     ║");
+        msgOut("║  enemies.                                        ║");
+        msgOut("╠══════════════════════════════════════════════════╣");
+        msgOut("  Remaining HP: " + remainingHp + "/" + maxHp);
+        msgOut("  Total Rounds: " + totalRounds);
+        // Display remaining items
+        if (player.hasItems()) {
+            System.out.print("  Remaining Items: ");
+            for (Item item : player.getInventory()) {
+                System.out.print(item.getName() + " ");
+            }
+            msgOut("");
+        }
+        System.out.println("╚══════════════════════════════════════════════════╝");
+    }
+
+    public void displayDefeat(int enemiesRemaining, int totalRounds) {
+        msgOut();
+        msgOut("╔══════════════════════════════════════════════════╗");
+        msgOut("║                     DEFEAT                       ║");
+        msgOut("╠══════════════════════════════════════════════════╣");
+        msgOut("║  Defeated. Don't give up, try again!            ║");
+        msgOut("╠══════════════════════════════════════════════════╣");
+        msgOut("  Enemies Remaining: " + enemiesRemaining);
+        msgOut("  Total Rounds Survived: " + totalRounds);
+        msgOut("╚══════════════════════════════════════════════════╝");
+    }
+
+    public int getReplayChoice() {
+        msgOut();
+        msgOut("  What would you like to do?");
+        msgOut("  [1] Replay with same settings");
+        msgOut("  [2] Start a new game");
+        msgOut("  [3] Exit");
+        return getValidInput("  > ", 1, 3);
+    }
+
 
     public void msgOut(String message) {
         System.out.println(message);
