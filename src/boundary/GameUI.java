@@ -202,6 +202,24 @@ public class GameUI {
         return choice;
     }
 
+    public int selectTarget(List<Enemy> aliveEnemies) {
+        msgOut("    Select target:");
+        for (int i = 0; i < aliveEnemies.size(); i++) {
+            Enemy e = aliveEnemies.get(i);
+            msgOut("    [" + (i + 1) + "] " + e.getName() +
+                             " (HP: " + e.getHp() + "/" + e.getMaxHp() + ")");
+        }
+        return getValidInput("   > ", 1, aliveEnemies.size()) - 1;
+    }
+
+    public int selectItemFromInventory(List<Item> items) {
+        msgOut("    Select item to use:");
+        for (int i = 0; i < items.size(); i++) {
+            msgOut("    [" + (i + 1) + "] " + items.get(i).getName());
+        }
+        return getValidInput("   > ", 1, items.size()) - 1;
+    }
+
     public void displayBackupSpawn(List<Enemy> backupEnemies) {
         msgOut("");
         msgOut("⚠ BACKUP SPAWN TRIGGERED! ⚠");
@@ -235,7 +253,7 @@ public class GameUI {
     }
 
     public void displayDefeat(int enemiesRemaining, int totalRounds) {
-        msgOut();
+        msgOut("");
         msgOut("╔══════════════════════════════════════════════════╗");
         msgOut("║                     DEFEAT                       ║");
         msgOut("╠══════════════════════════════════════════════════╣");
@@ -247,7 +265,7 @@ public class GameUI {
     }
 
     public int getReplayChoice() {
-        msgOut();
+        msgOut("");
         msgOut("  What would you like to do?");
         msgOut("  [1] Replay with same settings");
         msgOut("  [2] Start a new game");
@@ -255,6 +273,38 @@ public class GameUI {
         return getValidInput("  > ", 1, 3);
     }
 
+    public void displayRoundEnd(int roundNumber, Player player, List<Enemy> enemies) {
+        msgOut("");
+        msgOut("── End of Round " + roundNumber + " ──");
+        System.out.print("  " + player.getName() + " HP: " + player.getHp() + "/" + player.getMaxHp());
+        if (player.getSpecialSkillCooldown() > 0) {
+            System.out.print(" | Cooldown: " + player.getSpecialSkillCooldown());
+        }
+        msgOut("");
+        for (Enemy e : enemies) {
+            if (e.isAlive()) {
+                System.out.print("  " + e.getName() + " HP: " + e.getHp() + "/" + e.getMaxHp());
+                if (!e.getActiveEffects().isEmpty()) {
+                    for (StatusEffect eff : e.getActiveEffects()) {
+                        System.out.print(" [" + eff.getName() + "]");
+                    }
+                }
+                msgOut("");
+            } else {
+                msgOut("  " + e.getName() + " ✗ ELIMINATED");
+            }
+        }
+        // Display items
+        System.out.print("  Items: ");
+        if (player.hasItems()) {
+            for (Item item : player.getInventory()) {
+                System.out.print(item.getName() + " ");
+            }
+        } else {
+            System.out.print("None");
+        }
+        msgOut("");
+    }
 
     public void msgOut(String message) {
         System.out.println(message);
