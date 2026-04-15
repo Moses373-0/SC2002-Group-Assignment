@@ -73,14 +73,14 @@ public class GameManager {
             TurnOrderStrategy turnOrderStrategy = createTurnOrderStrategy(savedStrategyChoice);
 
             // Display game info
-            ui.displayMessage("");
-            ui.displayMessage("═══════════════ BATTLE START ══════════════════");
-            ui.displayMessage("  Player: " + player.getName());
-            ui.displayMessage("  " + player);
-            ui.displayMessage("  Items: " + player.getInventory().get(0).getName() +
+            ui.msgOut("");
+            ui.msgOut("═══════════════ BATTLE START ══════════════════");
+            ui.msgOut("  Player: " + player.getName());
+            ui.msgOut("  " + player);
+            ui.msgOut("  Items: " + player.getInventory().get(0).getName() +
                             " + " + player.getInventory().get(1).getName());
-            ui.displayMessage("  Difficulty: " + level.getDifficulty().getDisplayName());
-            ui.displayMessage("═══════════════════════════════════════════════");
+            ui.msgOut("  Difficulty: " + level.getDifficulty().getDisplayName());
+            ui.msgOut("═══════════════════════════════════════════════");
 
             // Run battle
             BattleEngine engine = new BattleEngine(player, level, turnOrderStrategy, ui);
@@ -104,8 +104,8 @@ public class GameManager {
                     break;
                 case 3: // Exit
                     running = false;
-                    ui.displayMessage("");
-                    ui.displayMessage("Thanks for playing! Goodbye.");
+                    ui.msgOut("");
+                    ui.msgOut("Thanks for playing! Goodbye.");
                     break;
             }
         }
