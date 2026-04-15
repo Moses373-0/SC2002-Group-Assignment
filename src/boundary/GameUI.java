@@ -2,6 +2,8 @@ package boundary;
 
 import entity.combatant.Combatant;
 import entity.combatant.player.Player;
+import entity.combatant.enemy.Enemy;
+import java.util.List;
 import java.util.Scanner;
 
 public class GameUI {
@@ -53,6 +55,25 @@ public class GameUI {
         return getValidInput("Choose item " + itemNumber + " (1-3): ", 1, 3);
     }
 
+    public void displayDifficultyOptions() {
+        msgOut("");
+        msgOut("════════════════ SELECT DIFFICULTY ════════════════");
+        msgOut("");
+        msgOut("    [1] Easy   - 3 Goblins");
+        msgOut("    [2] Medium - 1 Goblin + 1 Wolf | Backup: 2 Wolves");
+        msgOut("    [3] Hard   - 2 Goblins | Backup: 1 Goblin + 2 Wolves");
+        msgOut("");
+        msgOut("    Enemy Stats:");
+        msgOut("        Goblin: HP:55 | ATK:35 | DEF:15 | SPD:25");
+        msgOut("        Wolf:   HP:40 | ATK:45 | DEF:5  | SPD:35");
+        msgOut("");
+    }
+
+    public int selectDifficulty() {
+        displayDifficultyOptions();
+        return getValidInput("Choose difficulty (1-3): ", 1, 3);
+    }
+
     public int selectTurnOrderStrategy() {
         msgOut("");
         msgOut("═══════════ SELECT TURN ORDER STRATEGY ════════════");
@@ -68,21 +89,32 @@ public class GameUI {
         msgOut("══════════════════ ROUND " + roundNumber + " ══════════════════");
     }
 
-    public void displayTurnStart(Combatant combatant) {
+    public void displayTurnOrder(List<Combatant> combatants) {
+        System.out.print("  Turn Order: ");
+        for (int i = 0; i < combatants.size(); i++) {
+            Combatant c = combatants.get(i);
+            System.out.print(c.getName() + " (SPD:" + c.getSpeed() + ")");
+            if (i < combatants.size() - 1) System.out.print(" → ");
+        }
+        msgOut("");
+        msgOut("");
+    }
+
         System.out.println();
-        System.out.println(">> " + combatant.getName() + "'s Turn");
+    public void displayTurnStart(Combatant combatant) {
+        msgOut("");
+        msgOut(">> " + combatant.getName() + "'s Turn");
     }
 
     public void displayStunned(Combatant combatant) {
-        System.out.println("   " + combatant.getName() + " is STUNNED! Turn skipped.");
     }
 
     public void displayEliminated(Combatant combatant) {
-        System.out.println("   " + combatant.getName() + " is ELIMINATED. Turn skipped.");
+        msgOut("   " + combatant.getName() + " is ELIMINATED. Turn skipped.");
     }
 
     public void displayActionResult(String result) {
-        System.out.println("   " + result.replace("\n", "\n   "));
+        msgOut("   " + result.replace("\n", "\n    "));
     }
 
     public int getPlayerAction(Player player) {
@@ -114,6 +146,13 @@ public class GameUI {
             return getPlayerAction(player);
         }
         return choice;
+    }
+
+    public void displayBackupSpawn(List<Enemy> backupEnemies) {
+        msgOut("");
+        msgOut("⚠ BACKUP SPAWN TRIGGERED! ⚠");
+        msgOut("  New enemies enter the battlefield:");
+        msgOut("");
     }
 
 
