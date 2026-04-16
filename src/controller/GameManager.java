@@ -1,4 +1,5 @@
 package controller;
+
 import boundary.GameUI;
 import controller.turnorder.PlayerFirstTurnOrder;
 import controller.turnorder.SpeedBasedTurnOrder;
@@ -14,6 +15,7 @@ import entity.combatant.enemy.Goblin;
 import entity.combatant.enemy.Wolf;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * GameManager: orchestrates the overall game flow.
  * Handles character selection, item selection, difficulty, and replay.
@@ -23,46 +25,60 @@ import java.util.List;
 public class GameManager {
     private GameUI ui;
     private TurnOrderStrategy turnOrderStrategy;
+
     // Saved settings for replay
     private int savedPlayerChoice;
     private int savedItem1Choice;
     private int savedItem2Choice;
     private int savedDifficultyChoice;
     private int savedStrategyChoice;
+
     public GameManager() {
         this.ui = new GameUI();
     }
+
     /**
      * Start the game loop.
      */
     public void start() {
         ui.displayTitle();
+
         boolean running = true;
         boolean isNewGame = true;
+
         while (running) {
             if (isNewGame) {
                 // Player selection
                 savedPlayerChoice = ui.selectPlayer();
+
                 // Item selection
                 ui.displayItemOptions();
                 savedItem1Choice = ui.selectItem(1);
                 savedItem2Choice = ui.selectItem(2);
+
                 // Difficulty selection
                 savedDifficultyChoice = ui.selectDifficulty();
+
                 // Turn order strategy selection
                 savedStrategyChoice = ui.selectTurnOrderStrategy();
             }
+
             // Create player
             Player player = createPlayer(savedPlayerChoice);
+
             // Add items
             player.addItem(createItem(savedItem1Choice));
             player.addItem(createItem(savedItem2Choice));
+
             // Create level
             Level level = createLevel(savedDifficultyChoice);
+
             // Create turn order strategy
             TurnOrderStrategy turnOrderStrategy = createTurnOrderStrategy(savedStrategyChoice);
+
             // Create actions list (OCP: add new actions here without modifying BattleEngine)
             List<Action> actions = createActions();
+
             // Display game info
             ui.displayMessage("");
             ui.displayMessage("═══════════════ BATTLE START ══════════════════");
@@ -72,15 +88,18 @@ public class GameManager {
                             " + " + player.getInventory().get(1).getName());
             ui.displayMessage("  Difficulty: " + level.getDifficulty().getDisplayName());
             ui.displayMessage("═══════════════════════════════════════════════");
+
             // Run battle
             BattleEngine engine = new BattleEngine(player, level, turnOrderStrategy, actions, ui);
             engine.runBattle();
+
             // Display results
             if (engine.isPlayerWon()) {
                 ui.displayVictory(player.getHp(), player.getMaxHp(), engine.getRoundNumber(), player);
             } else {
                 ui.displayDefeat(engine.getAliveEnemyCount(), engine.getRoundNumber());
             }
+
             // Replay?
             int replayChoice = ui.getReplayChoice();
             switch (replayChoice) {
@@ -98,6 +117,7 @@ public class GameManager {
             }
         }
     }
+
     /**
      * Create the list of player actions.
      * This is the single place where concrete actions are known.
@@ -111,6 +131,7 @@ public class GameManager {
         actions.add(new SpecialSkill());
         return actions;
     }
+
     private Player createPlayer(int choice) {
         switch (choice) {
             case 1: return new Warrior();
@@ -118,6 +139,7 @@ public class GameManager {
             default: return new Warrior();
         }
     }
+
     private Item createItem(int choice) {
         switch (choice) {
             case 1: return new Potion();
@@ -126,6 +148,7 @@ public class GameManager {
             default: return new Potion();
         }
     }
+
     private Level createLevel(int choice) {
         switch (choice) {
             case 1: return new Level(Difficulty.EASY);
@@ -134,6 +157,7 @@ public class GameManager {
             default: return new Level(Difficulty.EASY);
         }
     }
+
     private TurnOrderStrategy createTurnOrderStrategy(int choice) {
         switch (choice) {
             case 1: return new SpeedBasedTurnOrder();

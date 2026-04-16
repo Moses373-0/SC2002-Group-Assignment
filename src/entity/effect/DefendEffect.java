@@ -7,24 +7,24 @@ import entity.combatant.Combatant;
  * Duration: 2 turns.
  */
 public class DefendEffect extends StatusEffect {
-  private static final int DEFENSE_BONUS = 10;
+    private static final int DEFENSE_BONUS = 10;
 
-  public DefendEffect() {
-    super("Defend", 2);
-  }
+    public DefendEffect() {
+        super("Defend", 2);
+    }
 
-  @Override
-  public void onApply(Combatant target) {
-    target.setBonusDefense(target.getBonusDefense() + DEFENSE_BONUS);
-  }
+    @Override
+    public void onApply(Combatant target) {
+        target.setBonusDefense(target.getBonusDefense() + DEFENSE_BONUS);
+    }
 
-  @Override
-  public void onTurnStart(Combatant target) {
-    // Bonus already applied
-  }
+    @Override
+    public void onTurnStart(Combatant target) {
+        // Bonus already applied
+    }
 
-  @Override
-  public void onRemove(Combatant target) {
-    target.setBonusDefense(target.getBonusDefense() - DEFENSE_BONUS);
-  }
+    @Override
+    public void onRemove(Combatant target) {
+        target.setBonusDefense(target.getBonusDefense() - DEFENSE_BONUS);
+    }
 }

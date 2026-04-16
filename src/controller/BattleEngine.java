@@ -1,4 +1,5 @@
 package controller;
+
 import boundary.GameUI;
 import controller.turnorder.TurnOrderStrategy;
 import entity.action.Action;
@@ -9,6 +10,7 @@ import entity.item.Item;
 import entity.level.Level;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * BattleEngine: manages the flow of battle rounds.
  * Demonstrates SRP: only manages battle flow.
@@ -26,8 +28,10 @@ public class BattleEngine {
     private int roundNumber;
     private boolean battleOver;
     private boolean playerWon;
+
     // Actions — injected via constructor (OCP: add new actions without modifying this class)
     private List<Action> actions;
+
     public BattleEngine(Player player, Level level, TurnOrderStrategy turnOrderStrategy,
                         List<Action> actions, GameUI ui) {
         this.player = player;
@@ -40,6 +44,7 @@ public class BattleEngine {
         this.battleOver = false;
         this.playerWon = false;
     }
+
     /**
      * Run the entire battle until completion.
      */
@@ -49,24 +54,31 @@ public class BattleEngine {
             runRound();
         }
     }
+
     /**
      * Run a single round.
      */
     private void runRound() {
         ui.displayRoundHeader(roundNumber);
+
         // Get alive combatants for turn order
         List<Combatant> aliveCombatants = getAliveCombatants();
         List<Combatant> turnOrder = turnOrderStrategy.determineTurnOrder(aliveCombatants);
+
         ui.displayTurnOrder(turnOrder);
         ui.displayCombatantStatus(player, allEnemies);
+
         // Process each combatant's turn
         for (Combatant combatant : turnOrder) {
             if (!combatant.isAlive()) {
                 continue;
             }
+
             ui.displayTurnStart(combatant);
+
             // Apply existing effects at start of turn
             combatant.applyEffects();
+
             // Check if stunned
             if (combatant.isStunned()) {
                 ui.displayStunned(combatant);
@@ -76,22 +88,28 @@ public class BattleEngine {
                 if (checkBattleEnd()) return;
                 continue;
             }
+
             // Process action
             if (combatant instanceof Player) {
                 processPlayerTurn((Player) combatant);
             } else if (combatant instanceof Enemy) {
                 processEnemyTurn((Enemy) combatant);
             }
+
             // Tick effects and cooldown
             combatant.tickAndRemoveExpiredEffects();
             combatant.tickCooldown();
+
             if (checkBattleEnd()) return;
         }
+
         // Check for backup spawn at end of round
         checkBackupSpawn();
+
         // Display round end
         ui.displayRoundEnd(roundNumber, player, allEnemies);
     }
+
     /**
      * Process the player's turn.
      * Uses the injected action list dynamically — no hardcoded switch on action types.
@@ -105,12 +123,15 @@ public class BattleEngine {
                 availableActions.add(action);
             }
         }
+
         // Display menu and get choice
         int actionChoice = ui.getPlayerAction(player, availableActions);
         Action selectedAction = availableActions.get(actionChoice - 1);
+
         // Resolve targeting based on the action's declared target type (no instanceof needed)
         List<Combatant> targets;
         Action.TargetType targetType = selectedAction.getTargetType(player);
+
         switch (targetType) {
             case SINGLE_ENEMY:
                 List<Enemy> aliveEnemies = getAliveEnemies();
@@ -127,6 +148,7 @@ public class BattleEngine {
                 targets = new ArrayList<>();
                 break;
         }
+
         // Handle item selection if action requires it (no instanceof needed — uses interface method)
         if (selectedAction.requiresItemSelection()) {
             int itemIndex = ui.selectItemFromInventory(player.getInventory());
@@ -135,9 +157,11 @@ public class BattleEngine {
             // Item-based actions pass all combatants so items like SmokeBomb can apply to player
             targets = new ArrayList<>(getAllCombatants());
         }
+
         String result = selectedAction.execute(player, targets);
         ui.displayActionResult(result);
     }
+
     /**
      * Process an enemy's turn.
      */
@@ -146,6 +170,7 @@ public class BattleEngine {
         String result = enemy.performAction(allCombatants);
         ui.displayActionResult(result);
     }
+
     /**
      * Check if backup spawn should be triggered.
      */
@@ -159,6 +184,7 @@ public class BattleEngine {
                     break;
                 }
             }
+
             if (allCurrentDefeated) {
                 List<Enemy> backup = level.triggerBackupSpawn();
                 allEnemies.addAll(backup);
@@ -166,6 +192,7 @@ public class BattleEngine {
             }
         }
     }
+
     /**
      * Check if battle has ended (all enemies dead or player dead).
      */
@@ -176,6 +203,7 @@ public class BattleEngine {
             playerWon = false;
             return true;
         }
+
         // Check all enemies dead (including potential backup)
         boolean allEnemiesDead = true;
         for (Enemy e : allEnemies) {
@@ -184,6 +212,7 @@ public class BattleEngine {
                 break;
             }
         }
+
         // Only declare victory if all enemies dead AND (no backup OR backup already triggered)
         if (allEnemiesDead) {
             if (!level.hasBackupSpawn() || level.isBackupTriggered()) {
@@ -197,9 +226,12 @@ public class BattleEngine {
                 ui.displayBackupSpawn(backup);
             }
         }
+
         return false;
     }
+
     // =================== HELPERS ===================
+
     private List<Combatant> getAliveCombatants() {
         List<Combatant> alive = new ArrayList<>();
         if (player.isAlive()) alive.add(player);
@@ -208,12 +240,14 @@ public class BattleEngine {
         }
         return alive;
     }
+
     private List<Combatant> getAllCombatants() {
         List<Combatant> all = new ArrayList<>();
         all.add(player);
         all.addAll(allEnemies);
         return all;
     }
+
     private List<Enemy> getAliveEnemies() {
         List<Enemy> alive = new ArrayList<>();
         for (Enemy e : allEnemies) {
@@ -221,11 +255,14 @@ public class BattleEngine {
         }
         return alive;
     }
+
     // =================== GETTERS ===================
+
     public int getRoundNumber() { return roundNumber; }
     public boolean isPlayerWon() { return playerWon; }
     public Player getPlayer() { return player; }
     public List<Enemy> getAllEnemies() { return allEnemies; }
+
     public int getAliveEnemyCount() {
         int count = 0;
         for (Enemy e : allEnemies) {

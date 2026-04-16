@@ -11,14 +11,14 @@ import java.util.List;
  */
 public class SmokeBomb implements Item {
 
-  @Override
-  public String getName() {
-    return "Smoke Bomb";
-  }
+    @Override
+    public String getName() {
+        return "Smoke Bomb";
+    }
 
-  @Override
-  public String use(Player player, List<Combatant> allCombatants) {
-    player.addEffect(new SmokeBombEffect());
-    return "Smoke Bomb deployed! Enemy attacks deal 0 damage for 2 turns.";
-  }
+    @Override
+    public String use(Player player, List<Combatant> allCombatants) {
+        player.addEffect(new SmokeBombEffect());
+        return "Smoke Bomb deployed! Enemy attacks deal 0 damage for 2 turns.";
+    }
 }

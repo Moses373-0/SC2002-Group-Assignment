@@ -8,27 +8,27 @@ import entity.combatant.Combatant;
  */
 public class SmokeBombEffect extends StatusEffect {
 
-  public SmokeBombEffect() {
-    super("Smoke Bomb Invulnerability", 2);
-  }
+    public SmokeBombEffect() {
+        super("Smoke Bomb Invulnerability", 2);
+    }
 
-  @Override
-  public void onApply(Combatant target) {
-    // No stat change, checked dynamically
-  }
+    @Override
+    public void onApply(Combatant target) {
+        // No stat change, checked dynamically
+    }
 
-  @Override
-  public void onTurnStart(Combatant target) {
-    // No per-turn effect
-  }
+    @Override
+    public void onTurnStart(Combatant target) {
+        // No per-turn effect
+    }
 
-  @Override
-  public void onRemove(Combatant target) {
-    // No cleanup
-  }
+    @Override
+    public void onRemove(Combatant target) {
+        // No cleanup
+    }
 
-  @Override
-  public boolean negatesDamage() {
-    return true;
-  }
+    @Override
+    public boolean negatesDamage() {
+        return true;
+    }
 }

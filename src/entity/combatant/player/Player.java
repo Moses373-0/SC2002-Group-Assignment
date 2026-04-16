@@ -1,5 +1,6 @@
 package entity.combatant.player;
 
+import entity.action.Action;
 import entity.combatant.Combatant;
 import entity.item.Item;
 import java.util.ArrayList;
@@ -42,4 +43,11 @@ public abstract class Player extends Combatant {
      * Get the name of this player's special skill.
      */
     public abstract String getSpecialSkillName();
+
+    /**
+     * Get the target type for this player's special skill.
+     * Delegates targeting knowledge to the player subclass,
+     * so BattleEngine never needs instanceof checks.
+     */
+    public abstract Action.TargetType getSpecialSkillTargetType();
 }

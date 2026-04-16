@@ -1,12 +1,15 @@
 package boundary;
+
 import entity.action.Action;
 import entity.combatant.Combatant;
-import entity.combatant.enemy.Enemy;
 import entity.combatant.player.Player;
+import entity.combatant.enemy.Enemy;
 import entity.effect.StatusEffect;
 import entity.item.Item;
+import entity.level.Difficulty;
 import java.util.List;
 import java.util.Scanner;
+
 /**
  * Boundary class for all CLI user interaction.
  * Demonstrates SRP: only handles input/output.
@@ -14,10 +17,13 @@ import java.util.Scanner;
  */
 public class GameUI {
     private Scanner scanner;
+
     public GameUI() {
         this.scanner = new Scanner(System.in);
     }
+
     // =================== LOADING SCREEN ===================
+
     public void displayTitle() {
         System.out.println("╔══════════════════════════════════════════════════╗");
         System.out.println("║         TURN-BASED COMBAT ARENA                ║");
@@ -25,6 +31,7 @@ public class GameUI {
         System.out.println("╚══════════════════════════════════════════════════╝");
         System.out.println();
     }
+
     public void displayPlayerOptions() {
         System.out.println("═══════════════ SELECT YOUR PLAYER ═══════════════");
         System.out.println();
@@ -37,10 +44,12 @@ public class GameUI {
         System.out.println("      Special: Arcane Blast - AoE damage + ATK buff on kills");
         System.out.println();
     }
+
     public int selectPlayer() {
         displayPlayerOptions();
         return getValidInput("Choose your player (1-2): ", 1, 2);
     }
+
     public void displayItemOptions() {
         System.out.println();
         System.out.println("═══════════════ SELECT YOUR ITEMS ════════════════");
@@ -51,9 +60,11 @@ public class GameUI {
         System.out.println("  [3] Smoke Bomb  - Enemy attacks deal 0 damage (2 turns)");
         System.out.println();
     }
+
     public int selectItem(int itemNumber) {
         return getValidInput("Choose item " + itemNumber + " (1-3): ", 1, 3);
     }
+
     public void displayDifficultyOptions() {
         System.out.println();
         System.out.println("════════════════ SELECT DIFFICULTY ════════════════");
@@ -67,11 +78,14 @@ public class GameUI {
         System.out.println("    Wolf:   HP:40 | ATK:45 | DEF:5  | SPD:35");
         System.out.println();
     }
+
     public int selectDifficulty() {
         displayDifficultyOptions();
         return getValidInput("Choose difficulty (1-3): ", 1, 3);
     }
+
     // =================== TURN ORDER STRATEGY ===================
+
     public int selectTurnOrderStrategy() {
         System.out.println();
         System.out.println("═══════════ SELECT TURN ORDER STRATEGY ════════════");
@@ -81,11 +95,14 @@ public class GameUI {
         System.out.println();
         return getValidInput("Choose turn order strategy (1-2): ", 1, 2);
     }
+
     // =================== BATTLE DISPLAY ===================
+
     public void displayRoundHeader(int roundNumber) {
         System.out.println();
         System.out.println("══════════════════ ROUND " + roundNumber + " ══════════════════");
     }
+
     public void displayTurnOrder(List<Combatant> turnOrder) {
         System.out.print("  Turn Order: ");
         for (int i = 0; i < turnOrder.size(); i++) {
@@ -96,10 +113,12 @@ public class GameUI {
         System.out.println();
         System.out.println();
     }
+
     public void displayCombatantStatus(Player player, List<Enemy> enemies) {
         System.out.println("── Status ──────────────────────────────────────────");
         System.out.println("  " + player.getName() + ": HP " + player.getHp() + "/" + player.getMaxHp() +
                            " | ATK:" + player.getAttack() + " | DEF:" + player.getDefense());
+
         // Active effects
         if (!player.getActiveEffects().isEmpty()) {
             System.out.print("    Effects: ");
@@ -108,6 +127,7 @@ public class GameUI {
             }
             System.out.println();
         }
+
         // Items
         if (player.hasItems()) {
             System.out.print("    Items: ");
@@ -116,12 +136,14 @@ public class GameUI {
             }
             System.out.println();
         }
+
         // Cooldown
         if (player.getSpecialSkillCooldown() > 0) {
             System.out.println("    Special Skill Cooldown: " + player.getSpecialSkillCooldown() + " rounds");
         } else {
             System.out.println("    Special Skill: READY");
         }
+
         System.out.println();
         for (Enemy enemy : enemies) {
             if (enemy.isAlive()) {
@@ -140,20 +162,26 @@ public class GameUI {
         }
         System.out.println("────────────────────────────────────────────────────");
     }
+
     public void displayTurnStart(Combatant combatant) {
         System.out.println();
         System.out.println(">> " + combatant.getName() + "'s Turn");
     }
+
     public void displayStunned(Combatant combatant) {
         System.out.println("   " + combatant.getName() + " is STUNNED! Turn skipped.");
     }
+
     public void displayEliminated(Combatant combatant) {
         System.out.println("   " + combatant.getName() + " is ELIMINATED. Turn skipped.");
     }
+
     public void displayActionResult(String result) {
         System.out.println("   " + result.replace("\n", "\n   "));
     }
+
     // =================== PLAYER ACTION SELECTION ===================
+
     /**
      * Display available actions and get player choice.
      * Accepts a dynamic list of available actions (OCP: new actions appear automatically).
@@ -166,6 +194,7 @@ public class GameUI {
         }
         return getValidInput("   > ", 1, availableActions.size());
     }
+
     public int selectTarget(List<Enemy> aliveEnemies) {
         System.out.println("   Select target:");
         for (int i = 0; i < aliveEnemies.size(); i++) {
@@ -175,6 +204,7 @@ public class GameUI {
         }
         return getValidInput("   > ", 1, aliveEnemies.size()) - 1;
     }
+
     public int selectItemFromInventory(List<Item> items) {
         System.out.println("   Select item to use:");
         for (int i = 0; i < items.size(); i++) {
@@ -182,7 +212,9 @@ public class GameUI {
         }
         return getValidInput("   > ", 1, items.size()) - 1;
     }
+
     // =================== BACKUP SPAWN ===================
+
     public void displayBackupSpawn(List<Enemy> backupEnemies) {
         System.out.println();
         System.out.println("⚠ BACKUP SPAWN TRIGGERED! ⚠");
@@ -193,7 +225,9 @@ public class GameUI {
         }
         System.out.println();
     }
+
     // =================== GAME END ===================
+
     public void displayVictory(int remainingHp, int maxHp, int totalRounds, Player player) {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════════════╗");
@@ -214,6 +248,7 @@ public class GameUI {
         }
         System.out.println("╚══════════════════════════════════════════════════╝");
     }
+
     public void displayDefeat(int enemiesRemaining, int totalRounds) {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════════════╗");
@@ -225,6 +260,7 @@ public class GameUI {
         System.out.println("  Total Rounds Survived: " + totalRounds);
         System.out.println("╚══════════════════════════════════════════════════╝");
     }
+
     public int getReplayChoice() {
         System.out.println();
         System.out.println("  What would you like to do?");
@@ -233,7 +269,9 @@ public class GameUI {
         System.out.println("  [3] Exit");
         return getValidInput("  > ", 1, 3);
     }
+
     // =================== ROUND END ===================
+
     public void displayRoundEnd(int roundNumber, Player player, List<Enemy> enemies) {
         System.out.println();
         System.out.println("── End of Round " + roundNumber + " ──");
@@ -266,10 +304,13 @@ public class GameUI {
         }
         System.out.println();
     }
+
     public void displayMessage(String message) {
         System.out.println(message);
     }
+
     // =================== UTILITY ===================
+
     private int getValidInput(String prompt, int min, int max) {
         while (true) {
             System.out.print(prompt);
