@@ -11,6 +11,8 @@ import entity.combatant.player.Wizard;
 import entity.item.*;
 import entity.level.Difficulty;
 import entity.level.Level;
+import entity.combatant.enemy.Goblin;
+import entity.combatant.enemy.Wolf;
 import java.util.ArrayList;
 import java.util.List;
 
