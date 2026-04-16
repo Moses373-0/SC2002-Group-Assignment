@@ -1,5 +1,6 @@
 package entity.combatant.player;
 
+import entity.action.Action;
 import entity.combatant.Combatant;
 import entity.combatant.enemy.Enemy;
 import java.util.List;
@@ -42,5 +43,10 @@ public class Wizard extends Player {
     @Override
     public String getSpecialSkillName() {
         return "Arcane Blast";
+    }
+
+    @Override
+    public Action.TargetType getSpecialSkillTargetType() {
+        return Action.TargetType.ALL;
     }
 }

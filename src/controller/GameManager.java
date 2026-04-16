@@ -4,6 +4,7 @@ import boundary.GameUI;
 import controller.turnorder.PlayerFirstTurnOrder;
 import controller.turnorder.SpeedBasedTurnOrder;
 import controller.turnorder.TurnOrderStrategy;
+import entity.action.*;
 import entity.combatant.player.Player;
 import entity.combatant.player.Warrior;
 import entity.combatant.player.Wizard;
@@ -12,11 +13,14 @@ import entity.level.Difficulty;
 import entity.level.Level;
 import entity.combatant.enemy.Goblin;
 import entity.combatant.enemy.Wolf;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * GameManager: orchestrates the overall game flow.
  * Handles character selection, item selection, difficulty, and replay.
  * Demonstrates SRP: only manages game flow coordination.
+ * Acts as the Factory for creating concrete game objects (Factory Method pattern).
  */
 public class GameManager {
     private GameUI ui;
@@ -72,18 +76,21 @@ public class GameManager {
             // Create turn order strategy
             TurnOrderStrategy turnOrderStrategy = createTurnOrderStrategy(savedStrategyChoice);
 
+            // Create actions list (OCP: add new actions here without modifying BattleEngine)
+            List<Action> actions = createActions();
+
             // Display game info
-            ui.msgOut("");
-            ui.msgOut("═══════════════ BATTLE START ══════════════════");
-            ui.msgOut("  Player: " + player.getName());
-            ui.msgOut("  " + player);
-            ui.msgOut("  Items: " + player.getInventory().get(0).getName() +
+            ui.displayMessage("");
+            ui.displayMessage("═══════════════ BATTLE START ══════════════════");
+            ui.displayMessage("  Player: " + player.getName());
+            ui.displayMessage("  " + player);
+            ui.displayMessage("  Items: " + player.getInventory().get(0).getName() +
                             " + " + player.getInventory().get(1).getName());
-            ui.msgOut("  Difficulty: " + level.getDifficulty().getDisplayName());
-            ui.msgOut("═══════════════════════════════════════════════");
+            ui.displayMessage("  Difficulty: " + level.getDifficulty().getDisplayName());
+            ui.displayMessage("═══════════════════════════════════════════════");
 
             // Run battle
-            BattleEngine engine = new BattleEngine(player, level, turnOrderStrategy, ui);
+            BattleEngine engine = new BattleEngine(player, level, turnOrderStrategy, actions, ui);
             engine.runBattle();
 
             // Display results
@@ -104,11 +111,25 @@ public class GameManager {
                     break;
                 case 3: // Exit
                     running = false;
-                    ui.msgOut("");
-                    ui.msgOut("Thanks for playing! Goodbye.");
+                    ui.displayMessage("");
+                    ui.displayMessage("Thanks for playing! Goodbye.");
                     break;
             }
         }
+    }
+
+    /**
+     * Create the list of player actions.
+     * This is the single place where concrete actions are known.
+     * To add a new action, simply add it here — BattleEngine needs no changes (OCP).
+     */
+    private List<Action> createActions() {
+        List<Action> actions = new ArrayList<>();
+        actions.add(new BasicAttack());
+        actions.add(new Defend());
+        actions.add(new UseItem());
+        actions.add(new SpecialSkill());
+        return actions;
     }
 
     private Player createPlayer(int choice) {

@@ -1,5 +1,6 @@
 package entity.combatant.player;
 
+import entity.action.Action;
 import entity.combatant.Combatant;
 import entity.effect.StunEffect;
 import java.util.List;
@@ -43,5 +44,10 @@ public class Warrior extends Player {
     @Override
     public String getSpecialSkillName() {
         return "Shield Bash";
+    }
+
+    @Override
+    public Action.TargetType getSpecialSkillTargetType() {
+        return Action.TargetType.SINGLE_ENEMY;
     }
 }

@@ -2,7 +2,7 @@ package controller;
 
 import boundary.GameUI;
 import controller.turnorder.TurnOrderStrategy;
-import entity.action.*;
+import entity.action.Action;
 import entity.combatant.Combatant;
 import entity.combatant.player.Player;
 import entity.combatant.enemy.Enemy;
@@ -16,6 +16,8 @@ import java.util.List;
  * Demonstrates SRP: only manages battle flow.
  * Demonstrates DIP: depends on Combatant (abstract), Action (interface),
  *   TurnOrderStrategy (interface) — never on concrete classes.
+ * Demonstrates OCP: new actions can be added to the actions list
+ *   without modifying this class.
  */
 public class BattleEngine {
     private Player player;
@@ -27,27 +29,20 @@ public class BattleEngine {
     private boolean battleOver;
     private boolean playerWon;
 
-    // Actions
-    private BasicAttack basicAttackAction;
-    private Defend defendAction;
-    private UseItem useItemAction;
-    private SpecialSkill specialSkillAction;
+    // Actions — injected via constructor (OCP: add new actions without modifying this class)
+    private List<Action> actions;
 
-    public BattleEngine(Player player, Level level, TurnOrderStrategy turnOrderStrategy, GameUI ui) {
+    public BattleEngine(Player player, Level level, TurnOrderStrategy turnOrderStrategy,
+                        List<Action> actions, GameUI ui) {
         this.player = player;
         this.level = level;
         this.allEnemies = new ArrayList<>(level.getInitialSpawn());
         this.turnOrderStrategy = turnOrderStrategy;
+        this.actions = actions;
         this.ui = ui;
         this.roundNumber = 0;
         this.battleOver = false;
         this.playerWon = false;
-
-        // Initialize actions
-        this.basicAttackAction = new BasicAttack();
-        this.defendAction = new Defend();
-        this.useItemAction = new UseItem();
-        this.specialSkillAction = new SpecialSkill();
     }
 
     /**
@@ -117,53 +112,53 @@ public class BattleEngine {
 
     /**
      * Process the player's turn.
+     * Uses the injected action list dynamically — no hardcoded switch on action types.
+     * Adding a new Action implementation requires zero changes to this method (OCP).
      */
     private void processPlayerTurn(Player player) {
-        int actionChoice = ui.getPlayerAction(player);
+        // Build available actions list dynamically
+        List<Action> availableActions = new ArrayList<>();
+        for (Action action : actions) {
+            if (action.isAvailable(player)) {
+                availableActions.add(action);
+            }
+        }
 
-        List<Combatant> allCombatants = getAllCombatants();
+        // Display menu and get choice
+        int actionChoice = ui.getPlayerAction(player, availableActions);
+        Action selectedAction = availableActions.get(actionChoice - 1);
+
+        // Resolve targeting based on the action's declared target type (no instanceof needed)
         List<Combatant> targets;
-        String result;
+        Action.TargetType targetType = selectedAction.getTargetType(player);
 
-        switch (actionChoice) {
-            case 1: // Basic Attack
+        switch (targetType) {
+            case SINGLE_ENEMY:
                 List<Enemy> aliveEnemies = getAliveEnemies();
                 int targetIndex = ui.selectTarget(aliveEnemies);
                 targets = new ArrayList<>();
                 targets.add(aliveEnemies.get(targetIndex));
-                result = basicAttackAction.execute(player, targets);
                 break;
-
-            case 2: // Defend
-                targets = new ArrayList<>();
-                result = defendAction.execute(player, targets);
+            case ALL:
+                targets = new ArrayList<>(getAllCombatants());
                 break;
-
-            case 3: // Use Item
-                int itemIndex = ui.selectItemFromInventory(player.getInventory());
-                Item selectedItem = player.getInventory().get(itemIndex);
-                useItemAction.setSelectedItem(selectedItem);
-                result = useItemAction.execute(player, allCombatants);
-                break;
-
-            case 4: // Special Skill
-                if (player instanceof entity.combatant.player.Warrior) {
-                    // Warrior selects a single target
-                    List<Enemy> aliveTargets = getAliveEnemies();
-                    int skillTargetIndex = ui.selectTarget(aliveTargets);
-                    targets = new ArrayList<>();
-                    targets.add(aliveTargets.get(skillTargetIndex));
-                } else {
-                    // Wizard targets all enemies
-                    targets = new ArrayList<>(allCombatants);
-                }
-                result = specialSkillAction.execute(player, targets);
-                break;
-
+            case SELF:
+            case NONE:
             default:
-                result = "Invalid action!";
+                targets = new ArrayList<>();
+                break;
         }
 
+        // Handle item selection if action requires it (no instanceof needed — uses interface method)
+        if (selectedAction.requiresItemSelection()) {
+            int itemIndex = ui.selectItemFromInventory(player.getInventory());
+            Item selectedItem = player.getInventory().get(itemIndex);
+            selectedAction.setSelectedItem(selectedItem);
+            // Item-based actions pass all combatants so items like SmokeBomb can apply to player
+            targets = new ArrayList<>(getAllCombatants());
+        }
+
+        String result = selectedAction.execute(player, targets);
         ui.displayActionResult(result);
     }
 
