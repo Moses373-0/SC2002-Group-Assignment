@@ -242,6 +242,16 @@ public class GameUI {
         """.formatted(enemiesRemaining, totalRounds));
   }
 
+  public void displayBattleStart(Player player, Difficulty difficulty) {
+    System.out.println("""
+          ╔═══════════════ BATTLE START ═════════════════════╗
+          ║   Player:     %-35s║
+          ║   Items:      %-35s║
+          ║   Difficulty: %-35s║
+          ╚══════════════════════════════════════════════════╝
+        """.formatted(player.getName(), formatPlayerItems(player), difficulty.getDisplayName()));
+  }
+
   public int getReplayChoice() {
     System.out.println("""
         What would you like to do?
@@ -277,6 +287,11 @@ public class GameUI {
 
   public void displayMessage(String message) {
     System.out.println(message);
+  }
+
+  public void displayGameEnd() {
+    System.out.println();
+    System.out.println("Thanks for playing! Goodbye.");
   }
 
   // =================== UTILITY ===================
