@@ -285,10 +285,6 @@ public class GameUI {
     System.out.printf("  Items: %s\n", formatPlayerItems(player));
   }
 
-  public void displayMessage(String message) {
-    System.out.println(message);
-  }
-
   public void displayGameEnd() {
     System.out.println();
     System.out.println("Thanks for playing! Goodbye.");
