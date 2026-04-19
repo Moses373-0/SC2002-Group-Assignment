@@ -154,9 +154,9 @@ All diagrams are stored in the [`diagrams/`](diagrams/) directory:
 | File | Description | Format |
 |------|-------------|--------|
 | [`SC2002_UML_Class_Diagram.png`](diagrams/SC2002_UML_Class_Diagram.png) | **Main UML class diagram** — colour-coded BCE layers with OO annotations | PNG |
-| [`class_diagram.png`](diagrams/class_diagram.png) | Alternative class diagram layout | PNG |
-| [`class_diagram1.png`](diagrams/class_diagram1.png) | Detailed class diagram with all methods | PNG |
-| [`Class Diagram1.jpg`](diagrams/Class%20Diagram1.jpg) | Full system overview diagram | JPG |
+| [`scenario1-shield-bash.png`](diagrams/scenario1-shield-bash.png) | **Scenario 1:** Warrior Executes Shield Bash on Goblin | PNG |
+| [`scenario2-potion.png`](diagrams/scenario2-potion.png) | **Scenario 2:** Warrior Uses Potion to Heal | PNG |
+| [`scenario3-goblin.png`](diagrams/scenario3-goblin.png.png) | **Scenario 3:** Goblin Executes Basic Attack on Warrior | PNG |
 ---
 ## 📄 License
 This project was developed as an academic assignment for NTU SC2002.
