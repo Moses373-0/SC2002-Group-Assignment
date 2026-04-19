@@ -1,0 +1,57 @@
+* a21c85f (HEAD -> main, origin/main, origin/HEAD) removing old class diagram
+* 25fe914 Update README.md
+* abafe7e Add files via upload
+* 7be9589 adding report
+* d1cb401 update readme
+* 310cf36 Create README.md
+* 03881a3 adding image files for scenario
+* 0cf001c cleanup files
+*   a4556d3 Merge pull request #2 from Moses373-0/sak
+|\  
+| * dbaf32f (origin/sak) remove displayMessage
+| * df50af9 remove display message to directly call ui methods
+| * 7f97c24 cleanup ui code
+|/  
+* 0e1fed2 remove og files
+* 6e6fcda latest changes
+* f3a74b6 stuneffect changes
+* e8bec36 Update BattleEngine.java
+* c92ad99 Updates
+* dc4ae64 Create GameManager and Main
+* 2f897c9 Update GameUI.java
+* 4370a8a Update GameUI.java
+* b476ea9 Update GameUI.java
+* 355a5e6 Update GameUI.java
+* 250c07c Update GameUI.java
+* 3610f47 Update GameUI.java
+* a1f4a2f Update GameUI.java
+* 7c45f54 Update GameUI.java
+* 1268775 Create GameUI.java
+* 1b990e6 additonal feature (playerfirst strat)
+*   492295e Merge pull request #1 from Moses373-0/feat/combat-mechanics
+|\  
+| * 4851171 feat:adding combat mechanics
+|/  
+* 4cf2c16 file management
+* 089fbd5 turn order & speed based function
+* 736a205 added level java
+* 394b275 added basic strat java
+* c38854d added goblin & wolf java
+* aedbb21 file movement
+* 1b399a3 Warrior and wizard java
+* 4163aec Add Combatant base class
+*   76c6cc1 Merge branch 'main' of https://github.com/Moses373-0/SC2002-Group-Assignment
+|\  
+| * 7ffb133 player java file
+| * f5ec65d difficulty java file created
+| * a07dd9b action & item java created
+| * 3bdca09 4 other folders created + statuseffect java file
+| * 86b6a52 Added enenmy & enemy action strat
+| * 9bb99f3 Files management & moved combatant file
+| * 948ff86 Update Combatant.java
+| * 449cb5b Create Combatant.java
+* 5febc3a (origin/moses) Delete and rename
+* e850622 Upload class diagram from April 10
+* efe7b3e Upload class diagram from April 2
+* 18816ee Upload class diagram from April 2
+* 484e189 Upload class diagram from April 1
