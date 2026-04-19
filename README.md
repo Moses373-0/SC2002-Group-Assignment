@@ -153,7 +153,7 @@ java -cp bin Main
 All diagrams are stored in the [`diagrams/`](diagrams/) directory:
 | File | Description | Format |
 |------|-------------|--------|
-| [`SC2002_UML_Class_Diagram.png`](diagrams/SC2002_UML_Class_Diagram.png) | **Main UML class diagram** — colour-coded BCE layers with OO annotations | PNG |
+| [`UML Class Diagram`](diagrams/UML Class Diagram.png) | **Main UML class diagram** — colour-coded BCE layers with OO annotations | PNG |
 | [`scenario1-shield-bash.png`](diagrams/scenario1-shield-bash.png) | **Scenario 1:** Warrior Executes Shield Bash on Goblin | PNG |
 | [`scenario2-potion.png`](diagrams/scenario2-potion.png) | **Scenario 2:** Warrior Uses Potion to Heal | PNG |
 | [`scenario3-goblin.png`](diagrams/scenario3-goblin.png.png) | **Scenario 3:** Goblin Executes Basic Attack on Warrior | PNG |
